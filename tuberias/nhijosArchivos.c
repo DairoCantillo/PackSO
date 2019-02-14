@@ -37,7 +37,6 @@ int main()
         }
         printf("\nleido\n");
         for (k = 0; k < tam; k++)printf("%c",lectura[k]);
-        lectura[strlen(lectura)] = '\0';
         printf("\n");
 
         write(fd[i+1][1], &tam, sizeof(int));
@@ -65,6 +64,7 @@ int main()
         for (int i=0; i< tam_file; i++){
             lectura[i] = fgetc(archivo);
             write(fd[0][1], &lectura[i], sizeof(char));
+            lectura[strlen(lectura)] = '\0';
         }
         fclose(archivo);     
         close(fd[0][1]);

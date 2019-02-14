@@ -63,13 +63,12 @@ int main()
 
             for (k = 0; k < tam; k++)
             {
-                read(fd[i][0], &lectura[k], sizeof(char));
+            read(fd[i][0], &lectura[k], sizeof(char));
                 //printf("Process %d: leido: %c\n", getpid(), lectura[k]);
             }
             printf("\nleido\n");
             for (k = 0; k < tam; k++)
                 printf("%c", lectura[k]);
-            lectura[strlen(lectura)] = '\0';
             printf("\n");
 
             close(fd[i][0]);
@@ -96,11 +95,11 @@ int main()
             /*printf("\nleido\n");
             for (k = 0; k < tam; k++)
                 printf("%c", lectura[k]);
-            lectura[strlen(lectura)] = '\0';
             printf("\n");
             */
             write(fd[i + 1][1], &tam, sizeof(int));
             write(fd[i + 1][1], lectura, tam);
+            lectura[strlen(lectura)] = '\0';
             close(fd[i][0]);
             close(fd[i + 1][1]);
         }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h2>10 primeros numeros primos</h2>
+
+    <p id="xd"></p>
+
+    <script>
+        var n = 29; //n es pordebajo de que numero quieres mostrar los numeros
+        var primo, contador, numeros = new Array();
+
+
+        for (var j = 2; j <= n; j++) { // desde 2 proque el 1 no es un numero primo
+            primo = 1; //primo=1 refiriendose a que  es primo
+            contador = 2;
+
+            while (contador <= (j / 2) && primo) { //si finaliza el ciclo while y no se cumple (j % contador == 0) entonces es un numero primo
+                if (j % contador == 0) { //se pregunta que si la division entre de j/contador es exacta
+                    primo = 0; //no es primo
+                }
+
+                contador++;
+            }
+
+            if (primo) { //solo entra aqui cuando es un numero primo
+                console.log(j); //se imprimen cada  numero
+                numeros.push(j);
+            }
+
+        }
+        document.getElementById("xd").innerHTML = numeros.toString();
+    </script>
+
+</body>
+
+</html>

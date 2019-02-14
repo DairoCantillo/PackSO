@@ -3,14 +3,19 @@
 #include <unistd.h>
 #include <wait.h>
 
+int c;
 int main(int argc, char const *argv[]){
 
     pid_t child, padre = getpid();
-    fork();
-    fork();
-    fork();
+    c = fork();
+    if (c == 0)
+    {
+        c = fork();
+    }
+    
 
-    if(padre==getpid()){
+    if (padre == getpid())
+    {
         char b[500];
         sprintf(b,"pstree -lp %d",getpid());
         system(b);

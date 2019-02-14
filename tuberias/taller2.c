@@ -16,9 +16,13 @@ int main()
 
     pid_t childs[n];
     int fd[n][2];
+    int fd1[n][2];
 
     for (j = 0; j < n; j++)
         if (pipe(fd[j]))
+            exit(-1);
+    for (j = 0; j < n; j++)
+        if (pipe(fd1[j]))
             exit(-1);
     for (i = 0; i < n; i++)
         if (!(childs[i] = fork()))
@@ -34,13 +38,13 @@ int main()
         }
         char lectura[1024];
         printf("\nIngrese el mensaje:\n");
-        scanf("%[^\n]", &lectura);
-        //scanf("%s", &lectura);
+        //scanf("%[^\n]", &lectura);
+        scanf("%s", &lectura);
         int tam_file = strlen(lectura);
 
         //tam_file -= 1;
         write(fd[0][1], &tam_file, sizeof(int));
-        
+
         for (int i = 0; i < tam_file; i++)
         {
             write(fd[0][1], &lectura[i], sizeof(char));
@@ -59,6 +63,14 @@ int main()
                     close(fd[j][1]);
                 }
             }
+            for (j = 0; j < n; j++)
+            {
+                if (i != j)
+                {
+                    close(fd1[j][0]);
+                    close(fd1[j][1]);
+                }
+            }
             int tam;
             read(fd[i][0], &tam, sizeof(int));
             char lectura[tam];
@@ -69,13 +81,19 @@ int main()
                 read(fd[i][0], &lectura[k], sizeof(char));
                 //printf("Process %d: leido: %c\n", getpid(), lectura[k]);
             }
+
             printf("\nleido\n");
             for (k = 0; k < tam; k++)
                 printf("%c", lectura[k]);
             printf("\n");
+            write(fd1[i][1], &tam, sizeof(int));
+            write(fd1[i][1], lectura, tam);
 
             close(fd[i][0]);
             close(fd[i][1]);
+            close(fd1[i][0]);
+            close(fd1[i][1]);
+            
         }
         else
         {
@@ -111,7 +129,69 @@ int main()
             close(fd[i][0]);
             close(fd[i + 1][1]);
         }
-        
+        if (i=(n-1))
+        {
+            for (j = 0; j < n; j++)
+            {
+                if (i != j)
+                {
+                    close(fd1[j][0]);
+                    close(fd1[j][1]);
+                }
+            }
+            int tam;
+            read(fd1[i][0], &tam, sizeof(int));
+            char lectura[tam];
+            //printf("tam = %d\n",tam);
+
+            for (k = 0; k < tam; k++)
+            {
+                read(fd1[i][0], &lectura[k], sizeof(char));
+                //printf("Process %d: leido: %c\n", getpid(), lectura[k]);
+            }
+            printf("\nleido\n");
+            printf("Process %d:"), getpid();
+            for (k = 0; k < tam; k++)
+                printf("%c", lectura[k]);
+            printf("\n");
+
+            close(fd1[i][0]);
+            close(fd1[i][1]);
+        }
+        else
+        {
+            for (j = 0; j < n; j++)
+            {
+                if (i != j)
+                    close(fd1[j][0]);
+                if ((i + 1) != j)
+                    close(fd1[j][1]);
+            }
+            int tam;
+            read(fd1[i][0], &tam, sizeof(int));
+            char lectura[tam];
+            //printf("tam = %d\n",tam);
+
+            for (k = 0; k < tam; k++)
+            {
+                read(fd1[i][0], &lectura[k], sizeof(char));
+                //printf("Process %d: leido: %c\n", getpid(), lectura[k]);
+            }
+            /*printf("\nleido\n");
+            for (k = 0; k < tam; k++)
+                printf("%c", lectura[k]);
+            printf("\n");
+            */
+            write(fd1[i + 1][1], &tam, sizeof(int));
+            write(fd1[i + 1][1], lectura, tam);
+            lectura[strlen(lectura)] = '\0';
+            printf("\nleido\n");
+            for (k = 0; k < tam; k++)
+                printf("%c", lectura[k]);
+            printf("\n");
+            close(fd1[i][0]);
+            close(fd1[i + 1][1]);
+        }
     }
 
     if (padre == getpid())
